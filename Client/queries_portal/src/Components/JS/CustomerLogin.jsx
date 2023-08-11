@@ -3,7 +3,6 @@ import { useNavigate }from 'react-router-dom';
 
 
 
-
 const CustomerLogin = () => {
   const navigate = useNavigate();
   const Cid = useRef("");
@@ -23,10 +22,10 @@ const CustomerLogin = () => {
     <div className='loginsubbox'>
         <h2 className='loginHeader'>Customers Login</h2>
         <input type="text" className='logintxt' placeholder='customers name' ref={Cname}/>
-        <input type="text"className='logintxt' placeholder='room id' ref={Cid}/>
+        <input type="text"className='logintxt' placeholder='customer id' ref={Cid}/>
         <button className='loginbtn' onClick={()=>{CustomerLogin(Cname,Cid)}}>Login</button>
     </div>
   )
 }
 
-export default CustomerLogin
+export default CustomerLogin;

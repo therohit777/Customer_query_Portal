@@ -3,7 +3,7 @@ import "../Css/customerpanel.css";
 import send from "../images/send.png";
 import  io from 'socket.io-client';
 import { useLocation } from 'react-router-dom';
-
+import axios from 'axios'
 
 
 const socket = io("http://localhost:8000");
@@ -16,20 +16,30 @@ const CustomerPanel = () => {
   const location = useLocation();
   const username = new URLSearchParams(location.search).get('data');
   const roomName = new URLSearchParams(location.search).get('room');
-  console.log(roomName);
+  
 
-  const messagesent = (e)=>{
+  const fetchdata = ()=>{
+    axios.get('/usermessages')
+    .then(response => {
+      setchats(response.data);
+      console.log(response.data);
+    })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+    });
+  }
+
+  const messagesent = async(e)=>{
     e.preventDefault();
     socket.emit("chat",{room: roomName,message,username})
     setmessage('');
   }
 
   useEffect(() => {
-    socket.on("chat",(payload)=>{
-      setchats([...chats,payload]);
-    });
-  })
-  
+    fetchdata();
+  });
+
+
   return (
     <div className='CustomerPanel'>      
       <form className="querybox" onSubmit={messagesent}>
@@ -38,27 +48,25 @@ const CustomerPanel = () => {
             chats.map((payload,index)=>{
               return(
                 <div key={index} style={{width:'100%'}}>
-                  { (payload.username===username)?
+                  { (payload.sender===username)?
                    <div style={{display:'flex',justifyContent:'flex-end',width:'100%'}}>
                      <div className='messagesent'>
-                        <div className='username'>Customer name: {payload.username}</div>
+                        <div className='username'>Customer name: {payload.sender}</div>
                         <div className='usermessage'>{payload.message}</div>
                      </div>
                    </div>
                    :
 
-                   (payload.room===roomName)?
+                   (payload.customer_id===roomName)?
                     <div style={{display:'flex',justifyContent:'flex-start',width:'100%'}}>
                       <div className='messagerecieve'>
-                        <div className='useragent'>Agent name: {payload.username}</div>
+                        <div className='useragent'>Agent name: {payload.sender}</div>
                         <div className='agentmessage '>{payload.message}</div>
                       </div>
                     </div>
                    :
                    <></>
-                  }
-                  
-
+                  }     
                 </div>
               )
             })
