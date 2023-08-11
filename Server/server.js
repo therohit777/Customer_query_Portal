@@ -20,8 +20,6 @@ mongoose.connect(mongoURI, {
 });
 
 
-
-
 app.get('/usermessages', async (req, res) => {
     try {
       const userData = await ChatMessage.find();
@@ -30,14 +28,6 @@ app.get('/usermessages', async (req, res) => {
       res.status(500).json({ error: 'An error occurred' });
     }
 });
-
-
-
-
-
-
-
-
 
 
 const server = require("http").createServer(app);
@@ -49,33 +39,15 @@ const io = require("socket.io")(server,{
 
 
 io.on("connection",(socket)=>{
-    // console.log("what is socket:",socket);
-    // console.log("Socket is active to be connect");
-
     socket.on("joinRoom", (roomName) => {
         //Join room
         socket.join(roomName); 
     });
 
-
-    // socket.on("chat", async (payload) => {
-    //     const message = new Message({
-    //       room: payload.room,
-    //       user: payload.user,
-    //       content: payload.message,
-    //     });
-    //     await message.save();
-    //     io.to(payload.room).emit("chat", message);
-    // })
-
-    // socket.on("chat",(payload)=>{
-    //     // console.log("What is payload",payload);
-    //     io.emit("chat",payload);  
-    // })
+    
     socket.on("chat", async (payload) => {
         try {
           // Save the chat message to MongoDB
-          console.log(payload);
           const newChatMessage = new ChatMessage({
             sender: payload.username,
             customer_id:payload.room,

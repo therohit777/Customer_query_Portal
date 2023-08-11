@@ -1,22 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import "../Css/customerpanel.css";
+import "../Css/customerpanel.css";
 import send from "../images/send.png";
 import  io from 'socket.io-client';
-import { useLocation } from 'react-router-dom';
-import axios from 'axios'
+import axios from 'axios';
+
 
 
 const socket = io("http://localhost:8000");
 
-
-
-const CustomerPanel = () => {
+const Rooms = (props) => {
   const [chats, setchats] = useState([]);
   const [message, setmessage] = useState('');
-  const location = useLocation();
   const [count, setcount] = useState(0);
-  const username = new URLSearchParams(location.search).get('data');
-  const roomName = new URLSearchParams(location.search).get('room');
+  const username = props.agents;
+  const roomName = props.room;
   
   
   const fetchdata = ()=>{
@@ -40,20 +38,18 @@ const CustomerPanel = () => {
   useEffect(() => {
     fetchdata();
   });
-
-
   return (
-    <div className='CustomerPanel'>      
-      <form className="querybox" onSubmit={messagesent}>
+    <div style={{width:'100%',height:'100%'}}>     
+      <form className="querybox agentsresolve" onSubmit={messagesent}>
         <div className="messagebox">
           {
             chats.map((payload,index)=>{
               return(
                 <div key={index} style={{width:'100%'}}>
-                  { (payload.sender===username)?
+                  { (payload.sender===username && payload.customer_id===roomName)?
                    <div style={{display:'flex',justifyContent:'flex-end',width:'100%'}}>
                      <div className='messagesent'>
-                        <div className='username'>Customer name: {payload.sender}</div>
+                        <div className='username'>Agent name: {payload.sender}</div>
                         <div className='usermessage'>{payload.message}</div>
                      </div>
                    </div>
@@ -62,7 +58,7 @@ const CustomerPanel = () => {
                    (payload.customer_id===roomName)?
                     <div style={{display:'flex',justifyContent:'flex-start',width:'100%'}}>
                       <div className='messagerecieve'>
-                        <div className='useragent'>Agent name: {payload.sender}</div>
+                        <div className='useragent'>Customer name: {payload.sender}</div>
                         <div className='agentmessage '>{payload.message}</div>
                       </div>
                     </div>
@@ -83,4 +79,4 @@ const CustomerPanel = () => {
   )
 }
 
-export default CustomerPanel
+export default Rooms
