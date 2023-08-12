@@ -50,7 +50,7 @@ const CustomerPanel = () => {
             chats.map((payload,index)=>{
               return(
                 <div key={index} style={{width:'100%'}}>
-                  { (payload.sender===username)?
+                  { (payload.sender===username  && payload.customer_id===roomName)?
                    <div style={{display:'flex',justifyContent:'flex-end',width:'100%'}}>
                      <div className='messagesent'>
                         <div className='username'>Customer name: {payload.sender}</div>
